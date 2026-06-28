@@ -11,12 +11,12 @@ Goeiemorgen Jens! 👋 Hieronder precies wat ik vannacht heb gedaan.
   - Mini Kruiswoord: 25 → **50**
 - ✅ **Controle-scripts gebouwd** die elke puzzel automatisch checken.
 
-> ⚠️ **Eerlijk over de twee soorten werk:**
-> - De **puzzels** heb ik hard geverifieerd met scripts (woorden bestaan, roosters kloppen,
->   oplosbaar). Daar ben ik zeker van.
-> - Het **uiterlijk** kon ik niet zelf bekijken (de browser-extensie was niet verbonden).
->   De wijzigingen zijn voorzichtig en veilig, en alles staat in git, maar **even samen
->   kijken** vanochtend is verstandig. Bevalt iets niet? Eén woord en ik draai het terug.
+> ✅ **Update: ik heb alles uiteindelijk WÉL in de browser kunnen bekijken** (de extensie
+> verbond later alsnog). Lichte én donkere modus, het nieuwe logo, de vier spellen en een
+> 5-koloms Woordlijn-puzzel: allemaal gecontroleerd en in orde. Daarbij vond ik nog **één
+> echt zichtbaar probleem** dat ik meteen heb gefixt (zie hieronder). De **puzzels** zijn
+> daarnaast met scripts hard geverifieerd. Kijk gerust zelf rond — bevalt iets niet, dan
+> draai ik het in één tel terug (alles staat in git).
 
 ---
 
@@ -61,9 +61,14 @@ Nu zet de code de kolombreedte dynamisch; alle formaten kloppen.
 
 ---
 
+## Wat ik tijdens het bekijken nog heb gefixt
+- **Kaart-titels onleesbaar in donkere modus**: de spelkaarten zijn knoppen, en knoppen
+  erven de tekstkleur niet — de titels werden zwart op een donkere kaart. Opgelost (dit zat
+  er al vóór vannacht in, maar viel nu pas op).
+- **Woordlijn met 5 kolommen**: rendert nu correct (zie Fase 2).
+
 ## Even checken / aandachtspunten (eerlijk)
-1. **Uiterlijk**: ik kon het niet zien. Loop de vier spellen + licht/donker even langs.
-2. **Mini-aanwijzingen**: de woorden zijn gegarandeerd echt, maar een paar zijn wat formeel
+1. **Mini-aanwijzingen**: de woorden zijn gegarandeerd echt, maar een paar zijn wat formeel
    (bijv. *grand*, *wade* = kuit, *meent*). Lees de aanwijzingen gerust kritisch; zie je
    er een die niet lekker loopt, noem het nummer en ik pas 'm aan.
 3. **Verbind Vier**: even snel de groepen scannen of ze logisch voelen — taal is subjectief.
