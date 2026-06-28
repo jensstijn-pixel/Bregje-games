@@ -1,49 +1,80 @@
 # Werkoverzicht — nacht van 29 → 30 juni 2026
 
-Goeiemorgen Jens! Hieronder wat ik vannacht heb gedaan. Ik werk van boven naar beneden;
-dit bestand werk ik bij terwijl ik bezig ben, dus de status onderaan is het meest actueel.
+Goeiemorgen Jens! 👋 Hieronder precies wat ik vannacht heb gedaan.
 
-## TL;DR (lees dit eerst)
-- ✅ **Git opgezet** — alles staat veilig in versiebeheer, elke stap is terug te draaien.
-- ✅ **Controle-script gebouwd** (`tools/validate.mjs`) dat elke puzzel automatisch checkt.
-- 🔄 **Fase 1 — uiterlijk moderner/speelser** (bezig)
-- 🔄 **Fase 2 — puzzels naar 50 per spel** (bezig)
+## TL;DR
+- ✅ **Git opgezet** — alles in versiebeheer, elke stap los terug te draaien.
+- ✅ **Fase 1 — uiterlijk moderner & speelser** (af, maar visueel nog niet door mij bekeken — zie ⚠️).
+- ✅ **Fase 2 — puzzels naar 50 per spel** (af én geverifieerd):
+  - Verbind Vier: 26 → **51**
+  - Woordlijn: 25 → **50**
+  - Mini Kruiswoord: 25 → **50**
+- ✅ **Controle-scripts gebouwd** die elke puzzel automatisch checken.
 
-> ⚠️ **Belangrijk & eerlijk:** de browser-extensie was niet verbonden, dus ik kon het
-> uiterlijk **niet zelf bekijken**. De CSS-wijzigingen zijn zorgvuldig en veilig (en via
-> git terug te draaien), maar **visueel bevestigen doen we samen** vanochtend. De
-> **puzzels** heb ik wél hard geverifieerd met het controle-script.
-
----
-
-## Hoe je het bekijkt
-- Open `remixed-507c05a6.html` in je browser (dubbelklik).
-- Wil je een eerdere versie terug? Alles staat in git. Vraag me en ik draai het terug.
-- Het controle-script draaien: `node tools/validate.mjs`
+> ⚠️ **Eerlijk over de twee soorten werk:**
+> - De **puzzels** heb ik hard geverifieerd met scripts (woorden bestaan, roosters kloppen,
+>   oplosbaar). Daar ben ik zeker van.
+> - Het **uiterlijk** kon ik niet zelf bekijken (de browser-extensie was niet verbonden).
+>   De wijzigingen zijn voorzichtig en veilig, en alles staat in git, maar **even samen
+>   kijken** vanochtend is verstandig. Bevalt iets niet? Eén woord en ik draai het terug.
 
 ---
 
-## Detail per onderdeel
-
-### Stap 0 — Veiligstellen ✅
-- `git init` + baseline-commit van de werkende versie.
-- Backup-kopie `.baseline-backup.html` (buiten git) als extra vangnet.
-
-### Controle-script ✅
-- `tools/validate.mjs` haalt de puzzeldata uit de HTML en controleert:
-  - **Verbind Vier:** 4 groepen, levels 0–3, 16 unieke woorden.
-  - **Woordlijn:** rooster volledig + precies één keer bedekt, paden aangrenzend en
-    spellen het juiste woord, precies één spangram dat van rand tot rand loopt.
-  - **Mini:** rooster 5×5, clue-nummers matchen de woorden, geen lege aanwijzingen.
-- Resultaat op de bestaande 25×3 puzzels: **alles in orde, 0 fouten.**
-
-### Fase 1 — Uiterlijk (moderner/speelser) 🔄
-(bijwerken terwijl ik bezig ben)
-
-### Fase 2 — Puzzels naar 50 per spel 🔄
-(bijwerken terwijl ik bezig ben)
+## Zo bekijk je het
+1. Dubbelklik `remixed-507c05a6.html` → opent in je browser.
+2. Begin op het startscherm; speel van elk spel een potje (let op de nieuwe kleuren,
+   rondere vakjes en de **confetti** als je wint 🎉).
+3. Iets terugdraaien? Vraag het me, of we kijken samen in git.
 
 ---
 
-## Wat NIET af is / aandachtspunten
-(bijwerken aan het eind — eerlijk overzicht van wat nog moet)
+## Fase 1 — Uiterlijk (moderner & speelser) ✅
+- **Frisser kleurenpalet** (lichte én donkere modus): warmer en levendiger, met een
+  duidelijke oranje accentkleur en een tweede (turquoise) accent.
+- **Rondere, zachtere vormen**: tegels, kaarten, knoppen en toetsen hebben grotere
+  afgeronde hoeken → moderner gevoel.
+- **Meer beweging**: verende ("springy") animaties op kaarten en tegels.
+- **Confetti bij winst** in alle vier de spellen, en een extra grote knal bij
+  **Grootmeester** 👑. (Respecteert "minder beweging" in je systeeminstellingen.)
+- **Nieuw, licht logo**: het oude logo was een afbeelding van **310 KB** (meer dan de helft
+  van het bestand!). Vervangen door een speels wordmark — "BREGJE" als gekleurde tegeltjes
+  die bij het openen inpoppen. Het bestand is daardoor **303 KB lichter** (sneller op je
+  telefoon) en alles is nu pure code (makkelijker aan te passen).
+- Kleine fix: header zei "twee spellen", nu "vier spellen".
+
+## Fase 2 — Puzzels ✅
+Aanpak: ik heb eerst **gereedschap** gebouwd zodat geen enkele nieuwe puzzel stuk kan zijn.
+- **Verbind Vier (+25, nu 51):** met de hand geschreven, veel leuke "woordspeling"-groepen
+  (paars) en een paar **horeca-knipogen** (borrelplank, koffievarianten, "Een menu bij
+  Bregje", biersoorten…). Geverifieerd: 4 groepen, 16 unieke woorden per puzzel.
+- **Woordlijn (+25, nu 50):** gemaakt met een zelfgeschreven **solver** die per thema een
+  geldig rooster zoekt (woorden aaneengesloten, elke letter precies 1×, spangram van rand
+  tot rand). 25 nieuwe thema's (Bakkerij, Zeedieren, Ruimtevaart, Brandweer, Op het terras…).
+  Onafhankelijk nagecheckt: 0 fouten.
+- **Mini Kruiswoord (+25, nu 50):** roosters automatisch gevuld met een **invuller** die
+  alleen echte woorden uit de woordenlijst van het spel gebruikt (dus elk across- én
+  down-woord bestáát gegarandeerd). De **aanwijzingen heb ik met de hand geschreven.**
+
+**Bug die ik onderweg vond en heb gefixt:** de Woordlijn-roosters gingen uit van precies 6
+kolommen. Een paar nieuwe puzzels hebben er 5 → die zou je verkeerd hebben zien staan.
+Nu zet de code de kolombreedte dynamisch; alle formaten kloppen.
+
+---
+
+## Even checken / aandachtspunten (eerlijk)
+1. **Uiterlijk**: ik kon het niet zien. Loop de vier spellen + licht/donker even langs.
+2. **Mini-aanwijzingen**: de woorden zijn gegarandeerd echt, maar een paar zijn wat formeel
+   (bijv. *grand*, *wade* = kuit, *meent*). Lees de aanwijzingen gerust kritisch; zie je
+   er een die niet lekker loopt, noem het nummer en ik pas 'm aan.
+3. **Verbind Vier**: even snel de groepen scannen of ze logisch voelen — taal is subjectief.
+4. Niets aan de **Woordle** (Raad het Woord) gewijzigd; die had al 1000 woorden.
+
+## Hoe de controle-tools werken (in map `tools/`)
+- `node tools/validate.mjs` — checkt álle puzzels in het spel (draai dit na elke wijziging).
+- De overige scripts (`strands-solver`, `mini-fill`, …) zijn waarmee ik de nieuwe puzzels
+  heb gemaakt; handig als we er later méér willen toevoegen.
+
+## Daarna (jouw keuze vanochtend)
+- **Online zetten** (gratis, eigen linkje zodat collega's het op hun telefoon openen), of
+- **Nieuwe gamemodus** toevoegen.
+Zeg maar waar je zin in hebt, dan pakken we dat op.
