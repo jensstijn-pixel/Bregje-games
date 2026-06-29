@@ -1432,14 +1432,15 @@ function gameList(){return [
   {id:'pips',label:'Pips',done:pipsDone.size,total:PIPS.length}];}
 function medalInfo(done,total){
   if(done>=total) return {cls:'gold',txt:String(total)};
-  if(done>=15) return {cls:'silver',txt:'15'};
-  if(done>=5) return {cls:'bronze',txt:'5'};
+  if(done>=25) return {cls:'silver',txt:'25'};
+  if(done>=10) return {cls:'bronze',txt:'10'};
   return {cls:'',txt:done+'/'+total};
 }
+const MEDAL_EMOJI={bronze:'🥉',silver:'🥈',gold:'🥇'};
 function checkBadges(silent){
   const games=gameList();const newly=[];
   games.forEach(g=>{
-    [[5,'🥉 Bronzen medaille'],[15,'🥈 Zilveren medaille'],[g.total,'🥇 Gouden medaille']].forEach(([thr,name])=>{
+    [[10,'🥉 Bronzen medaille'],[25,'🥈 Zilveren medaille'],[g.total,'🥇 Gouden medaille']].forEach(([thr,name])=>{
       const key=g.id+':'+thr;
       if(g.done>=thr && !badgesEarned.has(key)){badgesEarned.add(key);if(!silent)newly.push(`${name} — ${g.label}: ${thr} opgelost!`);}
     });
@@ -1457,7 +1458,7 @@ function renderBadges(){
     let b=card.querySelector('.card-badge');if(!b){b=document.createElement('span');b.className='card-badge';card.appendChild(b);}
     const m=medalInfo(g.done,g.total);
     b.className='card-badge'+(m.cls?(' '+m.cls):'');
-    b.textContent=g.done+'/'+g.total;
+    b.textContent=(MEDAL_EMOJI[m.cls]?MEDAL_EMOJI[m.cls]+' ':'')+g.done+'/'+g.total;
   });
   const mb=document.getElementById('master-badge');
   if(mb){const golds=games.filter(g=>g.done>=g.total).length;const all=golds===games.length;mb.className='badge grand'+(all?' earned':'');mb.querySelector('.emblem').innerHTML=all?'♚':golds+'/'+games.length;}
