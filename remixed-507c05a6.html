@@ -248,7 +248,13 @@
   .m-cell.wrong .m-letter{color:#c0392b}
   .m-cell.hint .m-letter{color:var(--present)}
   .m-cell.done .m-letter{color:var(--correct)}
-  .m-controls{display:flex;gap:8px;justify-content:center;margin:-2px 0 12px}
+  /* autocheck: vastgezette (correcte) cel */
+  .m-cell.locked{background:rgba(86,171,70,.14);border-color:rgba(86,171,70,.45);cursor:default}
+  .m-cell.locked .m-letter{color:var(--correct)}
+  .m-cell.locked.sel{background:var(--correct);border-color:var(--correct)}
+  .m-cell.locked.sel .m-letter{color:var(--on-color)}
+  .m-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:-2px 0 12px}
+  .cbtn.on{background:var(--correct);border-color:var(--correct);color:var(--on-color)}
   /* BADGES */
   .badges-head{text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:26px}
   .badges{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:12px}
@@ -428,6 +434,7 @@
           <button class="m-arrow" id="m-nextc" aria-label="Volgende">›</button>
         </div>
         <div class="m-controls">
+          <button class="cbtn" id="m-auto">Autocheck: uit</button>
           <button class="cbtn" id="m-hint">Hint · letter</button>
           <button class="cbtn" id="m-check">Controleer</button>
         </div>
@@ -996,6 +1003,7 @@ let mstats={played:0,best:0,totalTime:0};
 let mPz=null,mModel=null,mIdx=0,mMode='daily';
 let mEntry={},mDir='A',mSel=[0,0],mOver=false,mTimer=0,mTick=null,mStarted=false;
 let mDone=new Set(),mWrong=new Set(),mRevealed=new Set(),mHintsUsed=0;
+let mAutoCheck=false;
 
 function mDailyIdx(){return ((dayNumber()%MINI.length)+MINI.length)%MINI.length;}
 function mFmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
@@ -1034,8 +1042,11 @@ function mStart(mode,idx){
   mModeEl.innerHTML=mode==='daily'?`Puzzel van de dag &middot; <b>#${dayNumber()}</b>`:(mode==='pick'?`Puzzel <b>${mIdx+1}</b> van ${MINI.length}`:`<b>Oefenpuzzel</b> &middot; onbeperkt`);
   mDir=mModel.across.length?'A':'D';
   mSel=(mModel.across[0]||mModel.down[0]).cells[0];
+  mUpdateAutoBtn();
   mRenderBoard();mRenderClue();mRenderTimer();
 }
+function mUpdateAutoBtn(){const b=document.getElementById('m-auto');if(!b)return;b.textContent='Autocheck: '+(mAutoCheck?'aan':'uit');b.classList.toggle('on',mAutoCheck);}
+function mToggleAuto(){mAutoCheck=!mAutoCheck;store('mini:autocheck',mAutoCheck);mUpdateAutoBtn();if(mModel)mRenderBoard();}
 function mRenderTimer(){mTimerEl.textContent=mFmt(mTimer);}
 function mStartTimer(){if(mStarted||mOver)return;mStarted=true;mTick=setInterval(()=>{mTimer++;mRenderTimer();},1000);}
 
@@ -1055,6 +1066,7 @@ function mRenderBoard(){
     if(mRevealed.has(key))cell.classList.add('hint');
     if(mSel[0]===r&&mSel[1]===c)cell.classList.add('sel');
     if(mWrong.has(key))cell.classList.add('wrong');
+    if(mAutoCheck&&mEntry[key]){if(mEntry[key]===g[r][c])cell.classList.add('locked');else cell.classList.add('wrong');}
     if(mOver)cell.classList.add('done');
     cell.addEventListener('click',()=>mClick(r,c));
     mGridEl.appendChild(cell);
@@ -1072,21 +1084,23 @@ function mClick(r,c){
   else{mSel=[r,c];const {a,d}=mEntriesAt(r,c);if(mDir==='A'&&!a)mDir='D';if(mDir==='D'&&!d)mDir='A';}
   mRenderBoard();mRenderClue();
 }
+function mIsLocked(r,c){if(!mAutoCheck)return false;const k=r+','+c;return !!mEntry[k]&&mEntry[k]===mModel.g[r][c];}
+function mAdvanceSel(){const e=mCurrent();if(!e)return;const i=e.cells.findIndex(p=>p[0]===mSel[0]&&p[1]===mSel[1]);for(let j=i+1;j<e.cells.length;j++){if(!mIsLocked(e.cells[j][0],e.cells[j][1])){mSel=e.cells[j];return;}}}
 function mType(ch){
   if(mOver)return;
+  if(mIsLocked(mSel[0],mSel[1])){mAdvanceSel();mRenderBoard();mRenderClue();return;}
   mStartTimer();
   mEntry[mSel[0]+','+mSel[1]]=ch.toUpperCase();
-  const e=mCurrent();
-  if(e){const i=e.cells.findIndex(p=>p[0]===mSel[0]&&p[1]===mSel[1]);if(i+1<e.cells.length)mSel=e.cells[i+1];}
+  mAdvanceSel();
   mRenderBoard();mRenderClue();mCheckComplete();
 }
 function mBack(){
   if(mOver)return;
   const key=mSel[0]+','+mSel[1];
-  if(mEntry[key]){mEntry[key]='';mRenderBoard();return;}
+  if(mEntry[key]&&!mIsLocked(mSel[0],mSel[1])){mEntry[key]='';mRenderBoard();return;}
   const e=mCurrent();if(!e)return;
   const i=e.cells.findIndex(p=>p[0]===mSel[0]&&p[1]===mSel[1]);
-  if(i>0){mSel=e.cells[i-1];mEntry[mSel[0]+','+mSel[1]]='';mRenderBoard();mRenderClue();}
+  for(let j=i-1;j>=0;j--){if(!mIsLocked(e.cells[j][0],e.cells[j][1])){mSel=e.cells[j];mEntry[mSel[0]+','+mSel[1]]='';mRenderBoard();mRenderClue();return;}}
 }
 function mArrow(k){
   let [r,c]=mSel,dr=0,dc=0;
@@ -1109,7 +1123,7 @@ function mHint(){
   if(mEntry[r+','+c]===mModel.g[r][c]&&mRevealed.has(r+','+c)){toast("Dit vakje is al onthuld.");return;}
   mStartTimer();
   mEntry[r+','+c]=mModel.g[r][c];mRevealed.add(r+','+c);mHintsUsed++;
-  const e=mCurrent();if(e){const i=e.cells.findIndex(p=>p[0]===r&&p[1]===c);if(i+1<e.cells.length)mSel=e.cells[i+1];}
+  mAdvanceSel();
   mRenderBoard();mRenderClue();mCheckComplete();
 }
 function mCheck(){
@@ -1158,6 +1172,7 @@ function mBuildKeyboard(){
 }
 function mRenderList(){const box=document.getElementById('m-picker');box.innerHTML="";const today=mDailyIdx();MINI.forEach((p,i)=>{const b=document.createElement('button');b.className='pick-item';b.innerHTML=`<span class="pl">Puzzel ${i+1}${i===today?' <em>vandaag</em>':''}</span><span class="pr">${mDone.has(i)?'✓':''}</span>`;b.addEventListener('click',()=>{hide('m-list');mStart(i===today?'daily':'pick',i);});box.appendChild(b);});}
 document.getElementById('m-list-btn').addEventListener('click',()=>{mRenderList();show('m-list');});
+document.getElementById('m-auto').addEventListener('click',mToggleAuto);
 document.getElementById('m-hint').addEventListener('click',mHint);
 document.getElementById('m-check').addEventListener('click',mCheck);
 document.getElementById('m-prev').addEventListener('click',()=>mNavEntry(-1));
@@ -1230,6 +1245,7 @@ function markMHelpSeen(){mHelpSeen=true;store('mini:seen',true);}
   const ms=await load('mini:stats',null);if(ms)mstats=Object.assign(mstats,ms);
   cnDone=new Set(await load('connect:done',[]));stDone=new Set(await load('strands:done',[]));mDone=new Set(await load('mini:done',[]));
   wHelpSeen=await load('woordle:seen',false);cHelpSeen=await load('connect:seen',false);sHelpSeen=await load('strands:seen',false);mHelpSeen=await load('mini:seen',false);
+  mAutoCheck=await load('mini:autocheck',false);mUpdateAutoBtn();
   badgesEarned=new Set(await load('app:badges',[]));checkBadges(true);
   showScreen('home');
 })();
