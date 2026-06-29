@@ -2,6 +2,7 @@
 // Haalt CONN / STRANDS / MINI uit de HTML en checkt of elke puzzel structureel klopt.
 // Gebruik:  node tools/validate.mjs [pad-naar-html]
 import { readFileSync } from "node:fs";
+import * as pips from "./pips-core.mjs";
 
 const FILE = process.argv[2] || "remixed-507c05a6.html";
 const html = readFileSync(FILE, "utf8");
@@ -124,11 +125,31 @@ function validateMini(list) {
   });
 }
 
+// ================= PIPS =================
+function validatePips(list) {
+  console.log(`\n=== PIPS (${list.length} puzzels) ===`);
+  list.forEach((pz, idx) => {
+    const info = pips.parse(pz);
+    const ncell = info.cells.length;
+    for (const g in info.regCells) if (!pz.rules[g]) err("PIPS", idx, `regio "${g}" zonder regel`);
+    const cover = {};
+    pz.solution.forEach(pl => pl.cells.forEach(c => { cover[c.join(',')] = (cover[c.join(',')] || 0) + 1; }));
+    if (Object.keys(cover).length !== ncell) err("PIPS", idx, `solution dekt ${Object.keys(cover).length}/${ncell} cellen`);
+    if (Object.values(cover).some(x => x > 1)) err("PIPS", idx, `cellen dubbel bedekt`);
+    const val = new Array(ncell).fill(null);
+    pz.solution.forEach(pl => { val[info.idOf[pl.cells[0].join(',')]] = pl.vals[0]; val[info.idOf[pl.cells[1].join(',')]] = pl.vals[1]; });
+    if (!pips.rulesOK(pz, info, val)) err("PIPS", idx, `solution voldoet niet aan de regels`);
+    const cnt = pips.countSolutions(pz, info, 2);
+    if (cnt !== 1) err("PIPS", idx, `${cnt} oplossing(en) (moet 1)`);
+  });
+}
+
 // ---- draaien ----
 try {
   validateConn(grabArray("CONN"));
   validateStrands(grabArray("STRANDS"));
   validateMini(grabArray("MINI"));
+  validatePips(grabArray("PIPS"));
   console.log(`\n${"=".repeat(40)}`);
   if (errors === 0) console.log(`✅ Alles structureel in orde. (${warnings} waarschuwingen)`);
   else console.log(`❌ ${errors} fouten, ${warnings} waarschuwingen.`);
