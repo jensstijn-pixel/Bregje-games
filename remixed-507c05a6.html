@@ -285,6 +285,34 @@
   .m-key.wide{max-width:52px;flex:1.3}
   .m-key:active{transform:translateY(1px)}
   @media(max-width:380px){.m-key{height:42px}}
+  /* ---------- PIPS ---------- */
+  .p-wrap{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 12px}
+  .p-board{display:grid;gap:4px;margin:8px auto 12px;width:min(92vw,360px);touch-action:manipulation}
+  .p-cell{aspect-ratio:1/1;border-radius:12px;position:relative;display:grid;place-items:center;cursor:pointer;user-select:none;background:var(--panel);border:1px solid var(--panel-line);color:var(--text);transition:transform .08s,box-shadow .12s}
+  .p-cell.hole{visibility:hidden;cursor:default}
+  .p-cell.r0{background:rgba(239,168,54,.18)}
+  .p-cell.r1{background:rgba(109,192,86,.18)}
+  .p-cell.r2{background:rgba(90,160,230,.18)}
+  .p-cell.r3{background:rgba(176,114,216,.18)}
+  .p-cell .p-reg{position:absolute;top:3px;left:5px;font-size:11px;font-weight:800;color:var(--muted);line-height:1;z-index:2}
+  .p-cell.anchor{box-shadow:0 0 0 3px var(--accent)}
+  .p-cell.wrong{box-shadow:0 0 0 3px #c0392b}
+  .p-cell.filled{background:var(--cn-sel);border-color:var(--cn-sel);color:var(--cn-sel-text)}
+  .p-cell.filled .p-reg{color:var(--cn-sel-text);opacity:.85}
+  .p-cell.j-r{border-top-right-radius:3px;border-bottom-right-radius:3px}
+  .p-cell.j-l{border-top-left-radius:3px;border-bottom-left-radius:3px}
+  .p-cell.j-d{border-bottom-left-radius:3px;border-bottom-right-radius:3px}
+  .p-cell.j-u{border-top-left-radius:3px;border-top-right-radius:3px}
+  .pface{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:76%;height:76%;gap:7%}
+  .pface i{border-radius:50%;background:currentColor;visibility:hidden}
+  .pface i.on{visibility:visible}
+  .p-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:2px auto 12px;max-width:min(96vw,460px)}
+  .p-dom{display:flex;gap:3px;padding:5px;border-radius:11px;background:var(--panel);border:1.5px solid var(--panel-line);cursor:pointer;color:var(--text);transition:transform .08s,border-color .15s,box-shadow .15s}
+  .p-dom:active{transform:scale(.95)}
+  .p-dom.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+  .p-dom .half{width:clamp(26px,8vw,34px);height:clamp(26px,8vw,34px);display:grid;place-items:center;background:var(--bg2);border-radius:7px}
+  .p-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:2px 0 16px}
+  .p-hint{text-align:center;color:var(--muted);font-size:13px;margin:2px 0 4px}
 </style>
 </head>
 <body>
@@ -320,7 +348,7 @@
         </div>
         <div class="brand-sub">Games</div>
       </div>
-      <div class="home-sub">Raad het Woord, Verbind Vier, Woordlijn en Mini Kruiswoord — vier woordspellen in het Nederlands. Kies een spel om te beginnen.</div>
+      <div class="home-sub">Raad het Woord, Verbind Vier, Woordlijn, Mini Kruiswoord en Pips — vijf spellen. Kies een spel om te beginnen.</div>
       <div class="cards">
         <button class="card" id="card-woordle">
           <div class="cicon">
@@ -364,11 +392,20 @@
           </div>
           <div class="ctext"><h3>Mini Kruiswoord</h3><p>Los het kleine kruiswoord van 5×5 zo snel mogelijk op.</p></div>
         </button>
+        <button class="card" id="card-pips">
+          <div class="cicon">
+            <div style="display:flex;gap:4px">
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:3px;width:24px;height:24px;padding:3px;background:var(--bg);border-radius:6px;box-shadow:inset 0 0 0 1px var(--panel-line)"><i style="background:var(--accent);border-radius:50%"></i><i></i><i></i><i style="background:var(--accent);border-radius:50%"></i></div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:3px;width:24px;height:24px;padding:3px;background:var(--bg);border-radius:6px;box-shadow:inset 0 0 0 1px var(--panel-line)"><i style="background:var(--correct);border-radius:50%"></i><i style="background:var(--correct);border-radius:50%"></i><i style="background:var(--correct);border-radius:50%"></i><i style="background:var(--correct);border-radius:50%"></i></div>
+            </div>
+          </div>
+          <div class="ctext"><h3>Pips</h3><p>Leg de domino's zo dat elk gebied klopt.</p></div>
+        </button>
       </div>
       <div class="badges-head">Badges</div>
       <div class="badges" id="badges"></div>
       <div class="master-row">
-        <div class="badge grand" id="master-badge"><div class="emblem">0/3</div><div class="blabel">Grootmeester</div></div>
+        <div class="badge grand" id="master-badge"><div class="emblem">0/4</div><div class="blabel">Grootmeester</div></div>
       </div>
       <footer style="margin-top:auto;padding-top:22px">Woordenlijst: <span>OpenTaal</span></footer>
     </section>
@@ -439,6 +476,22 @@
           <button class="cbtn" id="m-check">Controleer</button>
         </div>
         <div id="m-keyboard"></div>
+      </div>
+    </section>
+
+    <!-- PIPS -->
+    <section class="screen" id="screen-pips">
+      <div class="p-wrap">
+        <div class="mode-tag" id="p-mode"></div>
+        <button class="pill" id="p-list-btn">Kies een puzzel</button>
+        <div class="p-board" id="p-grid"></div>
+        <div class="p-hint">Tik een steen, dan twee aangrenzende vakjes.</div>
+        <div class="p-tray" id="p-tray"></div>
+        <div class="p-controls">
+          <button class="cbtn" id="p-hint">Hint</button>
+          <button class="cbtn" id="p-clear">Wissen</button>
+          <button class="cbtn" id="p-check">Controleer</button>
+        </div>
       </div>
     </section>
   </main>
@@ -592,6 +645,45 @@
       <h2>Kies een puzzel <button class="close" data-close>&times;</button></h2>
       <p style="margin:6px 0 0">Mini Kruiswoord · <span style="color:var(--correct)">✓</span> = al opgelost.</p>
       <div class="picker" id="m-picker"></div>
+    </div>
+  </div>
+
+  <!-- PIPS HELP -->
+  <div class="overlay" id="p-help">
+    <div class="modal">
+      <h2>Pips <button class="close" data-close>&times;</button></h2>
+      <p>Leg alle dominostenen op het bord. Elk gekleurd <b>gebied</b> heeft een regel waar de ogen aan moeten voldoen.</p>
+      <ul class="rules">
+        <li>Een <b>getal</b> = de ogen in dat gebied tellen samen op tot dat getal.</li>
+        <li><b>=</b> alle helften in het gebied zijn gelijk; <b>≠</b> ze zijn allemaal verschillend.</li>
+        <li><b>&lt;n</b> / <b>&gt;n</b> elke helft is kleiner / groter dan n.</li>
+        <li>Tik een steen in de lade, tik dan twee aangrenzende vakjes (eerste tik = de linkerhelft). Tik een steen nog eens in de lade om 'm te draaien.</li>
+        <li>Tik een geplaatste steen om 'm terug te leggen. De puzzel is af als het bord vol ligt en alle gebieden kloppen.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PIPS STATS -->
+  <div class="overlay" id="p-stats">
+    <div class="modal">
+      <h2>Pips <button class="close" data-close>&times;</button></h2>
+      <div class="stats-grid">
+        <div class="stat"><div class="n" id="ps-played">0</div><div class="l">Opgelost</div></div>
+        <div class="stat"><div class="n" id="ps-best">—</div><div class="l">Beste tijd</div></div>
+        <div class="stat"><div class="n" id="ps-avg">—</div><div class="l">Gem. tijd</div></div>
+      </div>
+      <div id="p-result"></div>
+      <button class="btn" id="p-next">Volgende puzzel</button>
+      <div class="countdown" id="p-countdown"></div>
+    </div>
+  </div>
+
+  <!-- PIPS PUZZELLIJST -->
+  <div class="overlay" id="p-list">
+    <div class="modal">
+      <h2>Kies een puzzel <button class="close" data-close>&times;</button></h2>
+      <p style="margin:6px 0 0">Pips · <span style="color:var(--correct)">✓</span> = al opgelost.</p>
+      <div class="picker" id="p-picker"></div>
     </div>
   </div>
 
@@ -823,7 +915,7 @@ function hide(id){document.getElementById(id).classList.remove('show');}
 
 /* ============ navigation ============ */
 let currentScreen='home';
-let woordleInited=false, connectInited=false, strandsInited=false, miniInited=false;
+let woordleInited=false, connectInited=false, strandsInited=false, miniInited=false, pipsInited=false;
 const hTitle=document.getElementById('h-title'), hSub=document.getElementById('h-sub');
 const btnBack=document.getElementById('btn-back'), btnHelp=document.getElementById('btn-help'), btnStats=document.getElementById('btn-stats');
 
@@ -833,23 +925,25 @@ function showScreen(name){
   document.getElementById('screen-'+name).classList.add('active');
   if(name==='home'){
     btnBack.style.display='none'; btnHelp.style.display='none'; btnStats.style.display='none';
-    hTitle.innerHTML='Woordspellen'; hSub.textContent='vier spellen · Nederlands';
+    hTitle.innerHTML='Woordspellen'; hSub.textContent='vijf spellen · Nederlands';
     renderBadges();
   } else {
     btnBack.style.display='grid'; btnHelp.style.display='grid'; btnStats.style.display='grid';
     if(name==='woordle'){ hTitle.innerHTML='RAAD HET <span class="accent">WOORD</span>'; hSub.textContent='woord van 5 letters'; }
     else if(name==='connect'){ hTitle.innerHTML='VERBIND <span class="accent">VIER</span>'; hSub.textContent='vier groepen van vier'; }
     else if(name==='strands'){ hTitle.innerHTML='WOORD<span class="accent">LIJN</span>'; hSub.textContent='zoek alle themawoorden'; }
-    else { hTitle.innerHTML='MINI <span class="accent">KRUISWOORD</span>'; hSub.textContent='kruiswoord 5×5'; }
+    else if(name==='mini'){ hTitle.innerHTML='MINI <span class="accent">KRUISWOORD</span>'; hSub.textContent='kruiswoord 5×5'; }
+    else { hTitle.innerHTML='<span class="accent">PIPS</span>'; hSub.textContent='leg de domino\'s'; }
   }
 }
 document.getElementById('card-woordle').addEventListener('click',()=>{ showScreen('woordle'); if(!woordleInited){woordleInited=true; newGame('daily'); if(!wHelpSeen) {show('w-help'); markHelpSeen();}} });
 document.getElementById('card-connect').addEventListener('click',()=>{ showScreen('connect'); if(!connectInited){connectInited=true; cnStart('daily'); if(!cHelpSeen){show('c-help'); markCHelpSeen();}} });
 document.getElementById('card-strands').addEventListener('click',()=>{ showScreen('strands'); if(!strandsInited){strandsInited=true; stStart('daily'); if(!sHelpSeen){show('s-help'); markSHelpSeen();}} else { stDrawLines(); } });
 document.getElementById('card-mini').addEventListener('click',()=>{ showScreen('mini'); if(!miniInited){miniInited=true; mBuildKeyboard(); mStart('daily'); if(!mHelpSeen){show('m-help'); markMHelpSeen();}} });
+document.getElementById('card-pips').addEventListener('click',()=>{ showScreen('pips'); if(!pipsInited){pipsInited=true; pStart('daily'); if(!pHelpSeen){show('p-help'); markPHelpSeen();}} });
 btnBack.addEventListener('click',()=>showScreen('home'));
-btnHelp.addEventListener('click',()=>show(currentScreen==='woordle'?'w-help':currentScreen==='connect'?'c-help':currentScreen==='strands'?'s-help':'m-help'));
-btnStats.addEventListener('click',()=>{ if(currentScreen==='woordle') openWStats(wLast.won,wLast.tries); else if(currentScreen==='connect') openCStats(); else if(currentScreen==='strands') openSStats(); else openMStats(); });
+btnHelp.addEventListener('click',()=>show(currentScreen==='woordle'?'w-help':currentScreen==='connect'?'c-help':currentScreen==='strands'?'s-help':currentScreen==='mini'?'m-help':'p-help'));
+btnStats.addEventListener('click',()=>{ if(currentScreen==='woordle') openWStats(wLast.won,wLast.tries); else if(currentScreen==='connect') openCStats(); else if(currentScreen==='strands') openSStats(); else if(currentScreen==='mini') openMStats(); else openPStats(); });
 
 /* ============ WOORDLE ============ */
 const ROWS=6,COLS=5;
@@ -1236,12 +1330,103 @@ function renderSList(){const box=document.getElementById('s-picker');box.innerHT
 document.getElementById('c-list-btn').addEventListener('click',()=>{renderCList();show('c-list');});
 document.getElementById('s-list-btn').addEventListener('click',()=>{renderSList();show('s-list');});
 
+/* ============ PIPS ============ */
+const PIP_DOTS=[[],[4],[0,8],[0,4,8],[0,2,6,8],[0,2,4,6,8],[0,2,3,5,6,8]];
+function pFace(n){let s='<div class="pface">';for(let i=0;i<9;i++)s+='<i class="'+(PIP_DOTS[n].includes(i)?'on':'')+'"></i>';return s+'</div>';}
+let pPz=null,pIdx=0,pMode='daily';
+let pCells=[],pIdOf={},pRegOf={},pRegCells={},pAdj=[],pRegLabel={};
+let pPieces=[],pSel=-1,pAnchor=null,pWrong=new Set();
+let pOver=false,pTimer=0,pTick=null,pStarted=false;
+let pipsDone=new Set(),pHelpSeen=false;
+let pstats={played:0,best:0,totalTime:0};
+const pGridEl=document.getElementById('p-grid'),pTrayEl=document.getElementById('p-tray'),pModeEl=document.getElementById('p-mode');
+function pDailyIdx(){return ((dayNumber()%PIPS.length)+PIPS.length)%PIPS.length;}
+function pParse(pz){
+  pCells=[];pIdOf={};pRegOf={};pRegCells={};pRegLabel={};
+  for(let r=0;r<pz.rows;r++)for(let c=0;c<pz.cols;c++){ if(pz.grid[r][c]==='.'){ const k=r+','+c; pIdOf[k]=pCells.length; pCells.push([r,c]); const g=pz.regions[r][c]; pRegOf[k]=g; (pRegCells[g]=pRegCells[g]||[]).push(k); if(!(g in pRegLabel))pRegLabel[g]=k; } }
+  pAdj=pCells.map(([r,c])=>{const o=[];[[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc])=>{const k=(r+dr)+','+(c+dc);if(k in pIdOf)o.push(k);});return o;});
+}
+function pOcc(){ const v={},pid={}; pPieces.forEach((pc,id)=>{ if(pc.placed)pc.cells.forEach((c,k)=>{const key=c.join(',');v[key]=pc.vals[k];pid[key]=id;}); }); return {v,pid}; }
+function pRuleSym(rule){if(!rule)return'';if(rule.t==='sum')return String(rule.n);if(rule.t==='eq')return'=';if(rule.t==='neq')return'≠';if(rule.t==='lt')return'<'+rule.n;if(rule.t==='gt')return'>'+rule.n;return'';}
+function pStart(mode,idx){
+  pMode=mode;
+  pIdx=(typeof idx==='number')?idx:(mode==='daily'?pDailyIdx():Math.floor(Math.random()*PIPS.length));
+  pPz=PIPS[pIdx];pParse(pPz);
+  pPieces=pPz.dominoes.map(d=>({a:d[0],b:d[1],placed:false,cells:null,vals:null}));
+  pSel=-1;pAnchor=null;pWrong=new Set();pOver=false;pTimer=0;pStarted=false;clearInterval(pTick);pTick=null;
+  pModeEl.innerHTML=mode==='daily'?`Puzzel van de dag &middot; <b>#${dayNumber()}</b>`:(mode==='pick'?`Puzzel <b>${pIdx+1}</b> van ${PIPS.length}`:`<b>Oefenpuzzel</b> &middot; onbeperkt`);
+  pRenderBoard();pRenderTray();
+}
+function pStartTimer(){if(pStarted||pOver)return;pStarted=true;pTick=setInterval(()=>{pTimer++;},1000);}
+function pRenderBoard(){
+  pGridEl.style.gridTemplateColumns='repeat('+pPz.cols+',1fr)';
+  pGridEl.innerHTML='';
+  const {v,pid}=pOcc();
+  for(let r=0;r<pPz.rows;r++)for(let c=0;c<pPz.cols;c++){
+    const cell=document.createElement('div');const ch=pPz.grid[r][c];
+    if(ch==='#'){cell.className='p-cell hole';pGridEl.appendChild(cell);continue;}
+    const key=r+','+c,g=pPz.regions[r][c],ri=(g.charCodeAt(0)-97)%4;
+    cell.className='p-cell r'+ri;
+    if(pRegLabel[g]===key){const s=document.createElement('span');s.className='p-reg';s.textContent=pRuleSym(pPz.rules[g]);cell.appendChild(s);}
+    if(key in v){ cell.classList.add('filled'); const pc=pPieces[pid[key]];const other=pc.cells.find(cc=>cc.join(',')!==key);const dr=other[0]-r,dc=other[1]-c; cell.classList.add(dc===1?'j-r':dc===-1?'j-l':dr===1?'j-d':'j-u'); cell.insertAdjacentHTML('beforeend',pFace(v[key])); }
+    if(pAnchor===key)cell.classList.add('anchor');
+    if(pWrong.has(key))cell.classList.add('wrong');
+    cell.addEventListener('click',()=>pCellClick(r,c));
+    pGridEl.appendChild(cell);
+  }
+}
+function pRenderTray(){
+  pTrayEl.innerHTML='';
+  pPieces.forEach((pc,id)=>{ if(pc.placed)return; const d=document.createElement('div');d.className='p-dom'+(pSel===id?' sel':'');d.innerHTML='<div class="half">'+pFace(pc.a)+'</div><div class="half">'+pFace(pc.b)+'</div>';d.addEventListener('click',()=>pTapPiece(id));pTrayEl.appendChild(d); });
+}
+function pTapPiece(id){ if(pOver)return; if(pSel===id){const pc=pPieces[id];const t=pc.a;pc.a=pc.b;pc.b=t;} else {pSel=id;pAnchor=null;} pRenderBoard();pRenderTray(); }
+function pCellClick(r,c){ if(pOver)return; const key=r+','+c;const {pid}=pOcc();
+  if(key in pid){ const pc=pPieces[pid[key]];pc.placed=false;pc.cells=null;pc.vals=null;pAnchor=null;pRenderBoard();pRenderTray();return; }
+  if(pSel<0)return;
+  if(pAnchor===null){pAnchor=key;pRenderBoard();return;}
+  if(pAnchor===key){pAnchor=null;pRenderBoard();return;}
+  if(pAdj[pIdOf[pAnchor]].includes(key))pPlace(pSel,pAnchor,key);
+  else {pAnchor=key;pRenderBoard();}
+}
+function pPlace(id,aKey,bKey){ const pc=pPieces[id];pc.placed=true;pc.cells=[aKey.split(',').map(Number),bKey.split(',').map(Number)];pc.vals=[pc.a,pc.b];pSel=-1;pAnchor=null;pStartTimer();pRenderBoard();pRenderTray();pCheckComplete(); }
+function pClear(){ if(pOver)return; pPieces.forEach(pc=>{pc.placed=false;pc.cells=null;pc.vals=null;});pSel=-1;pAnchor=null;pWrong=new Set();pRenderBoard();pRenderTray(); }
+function pHint(){ if(pOver)return; const {pid}=pOcc();
+  for(const sol of pPz.solution){ const kA=sol.cells[0].join(','),kB=sol.cells[1].join(','); if((kA in pid)||(kB in pid))continue;
+    const id=pPieces.findIndex(pc=>!pc.placed&&((pc.a===sol.vals[0]&&pc.b===sol.vals[1])||(pc.a===sol.vals[1]&&pc.b===sol.vals[0]))); if(id<0)continue;
+    const pc=pPieces[id];pc.placed=true;pc.cells=[sol.cells[0],sol.cells[1]];pc.vals=[sol.vals[0],sol.vals[1]];pStartTimer();pSel=-1;pAnchor=null;pRenderBoard();pRenderTray();pCheckComplete();return; }
+  toast("Geen hint beschikbaar.");
+}
+function pRegOK(g,vals){ const rule=pPz.rules[g]; if(!rule||rule.t==='none')return true; if(vals.some(x=>x==null))return false; if(rule.t==='sum')return vals.reduce((a,b)=>a+b,0)===rule.n; if(rule.t==='eq')return vals.every(x=>x===vals[0]); if(rule.t==='neq')return new Set(vals).size===vals.length; if(rule.t==='lt')return vals.every(x=>x<rule.n); if(rule.t==='gt')return vals.every(x=>x>rule.n); return true; }
+function pCheckComplete(){ if(pPieces.some(pc=>!pc.placed))return; const {v}=pOcc(); let ok=true; for(const g in pRegCells){ if(!pRegOK(g,pRegCells[g].map(k=>v[k])))ok=false; } if(ok)pWin(); else { toast("Nog niet helemaal goed",1600); pFlashWrong(); } }
+function pFlashWrong(){ const {v}=pOcc();const w=new Set(); for(const g in pRegCells){ if(!pRegOK(g,pRegCells[g].map(k=>v[k])))pRegCells[g].forEach(k=>w.add(k)); } pWrong=w;pRenderBoard();setTimeout(()=>{pWrong=new Set();pRenderBoard();},1100); }
+function pCheck(){ if(pOver)return; const {v}=pOcc();const w=new Set();let any=false;
+  for(const g in pRegCells){ const keys=pRegCells[g];const filled=keys.map(k=>v[k]).filter(x=>x!=null);const rule=pPz.rules[g]||{t:'none'};let wrong=false;
+    if(rule.t==='lt')wrong=filled.some(x=>!(x<rule.n));
+    else if(rule.t==='gt')wrong=filled.some(x=>!(x>rule.n));
+    else if(rule.t==='eq')wrong=new Set(filled).size>1;
+    else if(rule.t==='neq')wrong=new Set(filled).size!==filled.length;
+    else if(rule.t==='sum'){const s=filled.reduce((a,b)=>a+b,0);wrong=s>rule.n||(filled.length===keys.length&&s!==rule.n);}
+    if(wrong){any=true;keys.forEach(k=>{if(v[k]!=null)w.add(k);});} }
+  if(!any){toast("Tot nu toe klopt alles!");return;}
+  pWrong=w;pRenderBoard();setTimeout(()=>{pWrong=new Set();pRenderBoard();},1100);
+}
+function pWin(){ pOver=true;clearInterval(pTick);pTick=null;pipsDone.add(pIdx);store('pips:done',[...pipsDone]);pstats.played++;pstats.totalTime+=pTimer;if(pstats.best===0||pTimer<pstats.best)pstats.best=pTimer;store('pips:stats',pstats);pRenderBoard();toast("Opgelost! 🎉",2200);confetti({count:120});checkBadges(false);setTimeout(openPStats,1500); }
+function openPStats(){ document.getElementById('ps-played').textContent=pstats.played;document.getElementById('ps-best').textContent=pstats.best?mFmt(pstats.best):'—';document.getElementById('ps-avg').textContent=pstats.played?mFmt(Math.round(pstats.totalTime/pstats.played)):'—';const rm=document.getElementById('p-result');if(pOver){rm.style.display='block';rm.innerHTML='<p style="text-align:center;margin-top:14px">Mooi opgelost! 🎉</p>';document.getElementById('p-next').style.display='block';}else{rm.style.display='none';document.getElementById('p-next').style.display='none';}show('p-stats'); }
+function pRenderList(){ const box=document.getElementById('p-picker');box.innerHTML="";const today=pDailyIdx();PIPS.forEach((p,i)=>{const b=document.createElement('button');b.className='pick-item';b.innerHTML=`<span class="pl">Puzzel ${i+1}${i===today?' <em>vandaag</em>':''}</span><span class="pr">${pipsDone.has(i)?'✓':''}</span>`;b.addEventListener('click',()=>{hide('p-list');pStart(i===today?'daily':'pick',i);});box.appendChild(b);}); }
+function markPHelpSeen(){pHelpSeen=true;store('pips:seen',true);}
+document.getElementById('p-list-btn').addEventListener('click',()=>{pRenderList();show('p-list');});
+document.getElementById('p-hint').addEventListener('click',pHint);
+document.getElementById('p-clear').addEventListener('click',pClear);
+document.getElementById('p-check').addEventListener('click',pCheck);
+document.getElementById('p-next').addEventListener('click',()=>{hide('p-stats');pStart('practice');});
+
 /* ============ badges ============ */
 let badgesEarned=new Set();
 function gameList(){return [
   {id:'connect',label:'Verbind Vier',done:cnDone.size,total:CONN.length},
   {id:'strands',label:'Woordlijn',done:stDone.size,total:STRANDS.length},
-  {id:'mini',label:'Mini Kruiswoord',done:mDone.size,total:MINI.length}];}
+  {id:'mini',label:'Mini Kruiswoord',done:mDone.size,total:MINI.length},
+  {id:'pips',label:'Pips',done:pipsDone.size,total:PIPS.length}];}
 function medalInfo(done,total){
   if(done>=total) return {cls:'gold',txt:String(total)};
   if(done>=15) return {cls:'silver',txt:'15'};
@@ -1267,7 +1452,7 @@ function renderBadges(){
   const games=gameList();
   box.innerHTML=games.map(g=>{const m=medalInfo(g.done,g.total);return `<div class="badge ${m.cls?('earned '+m.cls):''}"><div class="emblem">${m.txt}</div><div class="blabel">${g.label}</div></div>`;}).join('');
   const mb=document.getElementById('master-badge');
-  if(mb){const golds=games.filter(g=>g.done>=g.total).length;const all=golds===games.length;mb.className='badge grand'+(all?' earned':'');mb.querySelector('.emblem').innerHTML=all?'♚':golds+'/3';}
+  if(mb){const golds=games.filter(g=>g.done>=g.total).length;const all=golds===games.length;mb.className='badge grand'+(all?' earned':'');mb.querySelector('.emblem').innerHTML=all?'♚':golds+'/'+games.length;}
 }
 
 /* ============ modals + theme + keys ============ */
@@ -1294,8 +1479,9 @@ function markMHelpSeen(){mHelpSeen=true;store('mini:seen',true);}
   const cs=await load('connect:stats',null);if(cs)cstats=Object.assign(cstats,cs);
   const ss=await load('strands:stats',null);if(ss)sstats=Object.assign(sstats,ss);
   const ms=await load('mini:stats',null);if(ms)mstats=Object.assign(mstats,ms);
-  cnDone=new Set(await load('connect:done',[]));stDone=new Set(await load('strands:done',[]));mDone=new Set(await load('mini:done',[]));
-  wHelpSeen=await load('woordle:seen',false);cHelpSeen=await load('connect:seen',false);sHelpSeen=await load('strands:seen',false);mHelpSeen=await load('mini:seen',false);
+  const ps=await load('pips:stats',null);if(ps)pstats=Object.assign(pstats,ps);
+  cnDone=new Set(await load('connect:done',[]));stDone=new Set(await load('strands:done',[]));mDone=new Set(await load('mini:done',[]));pipsDone=new Set(await load('pips:done',[]));
+  wHelpSeen=await load('woordle:seen',false);cHelpSeen=await load('connect:seen',false);sHelpSeen=await load('strands:seen',false);mHelpSeen=await load('mini:seen',false);pHelpSeen=await load('pips:seen',false);
   mAutoCheck=await load('mini:autocheck',false);mUpdateAutoBtn();
   badgesEarned=new Set(await load('app:badges',[]));checkBadges(true);
   showScreen('home');
