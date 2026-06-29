@@ -11,5 +11,6 @@
   { "file": "koen.png",   "name": "Koen",   "aliases": ["moen"], "role": "Keuken", "age": 17 },
   { "file": "moos.png",   "name": "Moos",   "aliases": ["koos"], "role": "Keuken", "age": 18 },
   { "file": "sara.png",   "name": "Sara",   "aliases": [], "role": "Keuken", "age": 18 },
-  { "file": "faye.png",   "name": "Faye",   "aliases": [], "role": "Bar en run", "age": 18 }
+  { "file": "faye.png",   "name": "Faye",   "aliases": [], "role": "Bar en run", "age": 18 },
+  { "file": "lucas-bouwman.png", "name": "Lucas", "aliases": [], "role": "Run en spoeler (de beste Bregje gamer)", "age": 15 }
 ]
