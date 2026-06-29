@@ -16,7 +16,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
-const HTML = join(ROOT, 'remixed-507c05a6.html');
+const HTML = join(ROOT, 'index.html');
 const STAFF_DIR = join(ROOT, 'staff');
 const JSON_PATH = join(STAFF_DIR, 'staff.json');
 

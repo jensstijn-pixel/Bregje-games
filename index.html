@@ -2,8 +2,16 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Bregje Games</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#fbf4e9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bregje">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" href="./icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1728,6 +1736,25 @@ function markMHelpSeen(){mHelpSeen=true;store('mini:seen',true);}
   badgesEarned=new Set(await load('app:badges',[]));checkBadges(true);
   buildLogoHeads();
   showScreen('home');
+})();
+</script>
+<script>
+/* ===== PWA: offline-cache + installeer-knop ===== */
+(function(){
+  // service worker registreren (niet bij lokaal dubbelklikken via file:)
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
+  // installeer-knop (Android/Chrome): verschijnt alleen als installeren kan
+  let deferred=null;
+  const btn=document.createElement('button');
+  btn.textContent='📲 Installeer app';
+  btn.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%) translateY(20px);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;border:none;border-radius:999px;padding:11px 18px;font:inherit;font-weight:800;font-size:14px;color:var(--on-color,#fff);background:var(--accent,#ef5a2a);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:pointer';
+  function show(v){btn.style.opacity=v?'1':'0';btn.style.pointerEvents=v?'auto':'none';btn.style.transform='translateX(-50%) translateY('+(v?'0':'20px')+')';}
+  document.body.appendChild(btn);
+  window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferred=e;show(true);});
+  btn.addEventListener('click',async()=>{ if(!deferred)return; show(false); deferred.prompt(); try{await deferred.userChoice;}catch(e){} deferred=null; });
+  window.addEventListener('appinstalled',()=>{deferred=null;show(false);});
 })();
 </script>
 </body>

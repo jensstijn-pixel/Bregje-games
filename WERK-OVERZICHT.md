@@ -21,7 +21,7 @@ Goeiemorgen Jens! 👋 Hieronder precies wat ik vannacht heb gedaan.
 ---
 
 ## Zo bekijk je het
-1. Dubbelklik `remixed-507c05a6.html` → opent in je browser.
+1. Dubbelklik `index.html` → opent in je browser.
 2. Begin op het startscherm; speel van elk spel een potje (let op de nieuwe kleuren,
    rondere vakjes en de **confetti** als je wint 🎉).
 3. Iets terugdraaien? Vraag het me, of we kijken samen in git.

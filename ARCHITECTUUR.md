@@ -3,11 +3,13 @@
 Korte naslag over hoe dit project in elkaar zit, zodat we het niet telkens opnieuw hoeven uit te zoeken.
 
 ## Het grote plaatje
-- **Alles zit in één bestand:** `remixed-507c05a6.html`. Geen build-stap, geen frameworks, geen
+- **Alles zit in één bestand:** `index.html`. Geen build-stap, geen frameworks, geen
   dependencies. Pure HTML + CSS + JavaScript. Je opent het door te dubbelklikken.
-- **Mappen:**
+- **Mappen / bestanden:**
   - `tools/` — losse Node-scripts (`.mjs`) om puzzeldata te genereren/valideren. Draai met `node tools/<naam>.mjs`.
   - `staff/` — bronmateriaal voor "Raad het Personeel": de tekeningen + `staff.json`.
+  - PWA-bestanden (online-versie): `manifest.webmanifest`, `sw.js` (service worker, offline),
+    `icon-192.png`/`icon-512.png`/`icon-512-maskable.png`/`apple-touch-icon.png`.
   - `ARCHITECTUUR.md` (dit bestand), `WERK-OVERZICHT.md` (changelog).
 - **Opslag:** voortgang/stats staan in de browser (`localStorage`) via de helpers `store(key,val)` en
   `load(key,def)`. Niets wordt naar een server gestuurd.
@@ -71,6 +73,17 @@ kopieer-voorbeeld. Voor een nieuw spel met prefix `xx`:
 - **Spel:** speler typt de naam. Matching is ongevoelig voor hoofdletters/spaties/accenten en accepteert
   `aliases` (bijnamen). Hint onthult eerst de functie, daarna letter voor letter de naam. Bij goed:
   naam + functie + leeftijd + confetti.
+
+## Online zetten (PWA + GitHub Pages)
+- De app is een **PWA**: `manifest.webmanifest` (naam/icoon/kleuren) + `sw.js` (service worker die de
+  app cachet → installeerbaar op de telefoon en werkt offline). De `<head>` van `index.html` heeft de
+  manifest- en iOS-tags; onderaan staat de SW-registratie + een "Installeer"-knop (Android/Chrome).
+- Service workers werken **alleen via http(s)**, niet via `file:`. Dubbelklikken blijft werken (de SW
+  wordt dan netjes overgeslagen); installeren/offline werkt pas op de online https-link.
+- **Hosting:** GitHub Pages, vanaf `main` / root. Updaten = committen + `git push` → site ververst.
+  **Belangrijk bij elke release:** hoog de cache-versie in `sw.js` op (`VERSION = 'bregje-vN'`) zodat
+  collega's de nieuwe versie binnenkrijgen i.p.v. de oude uit de cache.
+- Iconen hergenereren (uit het logo) kan met headless Chrome; zie de git-historie van de icon-commit.
 
 ## Verifiëren
 - `node tools/validate.mjs` — checkt de puzzels van de woord-/cijferspellen.
