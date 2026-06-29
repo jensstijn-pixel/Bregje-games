@@ -1,0 +1,15 @@
+[
+  { "file": "naomi.png",  "name": "Naomi",  "aliases": [], "role": "Gastvrouw, bar en keuken", "age": 21 },
+  { "file": "jens.png",   "name": "Jens",   "aliases": [], "role": "Keuken", "age": 23 },
+  { "file": "sanne.png",  "name": "Sanne",  "aliases": [], "role": "Gastvrouw, bar en keuken", "age": 20 },
+  { "file": "jackie.png", "name": "Jackie", "aliases": [], "role": "Gastvrouw en keuken", "age": 22 },
+  { "file": "norvin.png", "name": "Norvin", "aliases": [], "role": "Manager", "age": 45 },
+  { "file": "jeremi.png", "name": "Jeremi", "aliases": ["jer"], "role": "Keuken", "age": 23 },
+  { "file": "bart.png",   "name": "Bart",   "aliases": [], "role": "Bar", "age": 25 },
+  { "file": "roos.png",   "name": "Roos",   "aliases": [], "role": "Gastvrouw", "age": 20 },
+  { "file": "lucas.png",  "name": "Lucas",  "aliases": [], "role": "Keuken", "age": 24 },
+  { "file": "koen.png",   "name": "Koen",   "aliases": ["moen"], "role": "Keuken", "age": 17 },
+  { "file": "moos.png",   "name": "Moos",   "aliases": ["koos"], "role": "Keuken", "age": 18 },
+  { "file": "sara.png",   "name": "Sara",   "aliases": [], "role": "Keuken", "age": 18 },
+  { "file": "faye.png",   "name": "Faye",   "aliases": [], "role": "Bar en run", "age": 18 }
+]
