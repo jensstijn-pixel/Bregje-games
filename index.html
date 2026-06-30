@@ -356,6 +356,29 @@
   .gc-rev-name{font-size:24px;font-weight:800;color:var(--correct)}
   .gc-rev-meta{color:var(--muted);font-size:15px;margin-top:2px}
   .gc-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 16px}
+  /* ---------- BURGERSPRONG ---------- */
+  .bs-wrap{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 12px}
+  .bs-select{width:100%;max-width:380px}
+  .bs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 18px}
+  .bs-pick{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border-radius:14px;border:1px solid var(--panel-line);background:var(--panel);color:var(--text);cursor:pointer;transition:transform .08s,border-color .15s,box-shadow .15s}
+  .bs-pick:hover{border-color:var(--accent);box-shadow:0 4px 12px var(--shadow)}
+  .bs-pick:active{transform:scale(.95)}
+  .bs-pick img{width:62px;height:62px;border-radius:50%;object-fit:cover;background:var(--bg2);border:2px solid var(--panel-line)}
+  .bs-pick .bs-nm{font-weight:700;font-size:13px}
+  .bs-pick .bs-hs{font-size:11px;color:var(--muted)}
+  .bs-play{width:100%;max-width:430px;display:none;flex-direction:column;align-items:center}
+  .bs-play.show{display:flex}
+  .bs-hud{display:flex;justify-content:space-between;align-items:center;width:100%;padding:6px 6px 8px}
+  .bs-hud .bs-score{color:var(--accent);font-size:22px;font-weight:800}
+  .bs-hud .bs-best{color:var(--muted);font-size:13px;font-weight:600}
+  .bs-canvas{width:100%;aspect-ratio:5/7;border-radius:18px;border:1px solid var(--panel-line);box-shadow:0 4px 14px var(--shadow);background:var(--bg);touch-action:none;display:block;cursor:pointer}
+  .bss-list{display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin-top:4px}
+  .bss-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--panel-line)}
+  .bss-row img{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--bg2)}
+  .bss-row .bss-nm{flex:1;font-weight:700;font-size:14px}
+  .bss-row .bss-hs{font-weight:800;color:var(--accent)}
+  .bso-score{font-size:54px;font-weight:800;color:var(--accent);font-family:"Fraunces",serif;margin:6px 0 0}
+  .bso-msg{color:var(--muted);font-size:15px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -456,6 +479,10 @@
             </div>
           </div>
           <div class="ctext"><h3>Raad het Personeel</h3><p>Raad welke collega in de tekening staat.</p></div>
+        </button>
+        <button class="card" id="card-bs">
+          <div class="cicon"><span style="font-size:34px;line-height:1">🍔</span></div>
+          <div class="ctext"><h3>Burgersprong</h3><p>Kies een collega en spring zo hoog mogelijk.</p></div>
         </button>
       </div>
       <div class="master-row">
@@ -568,6 +595,23 @@
         <div class="gc-controls">
           <button class="cbtn" id="gc-hint">Hint</button>
           <button class="cbtn" id="gc-next">Volgende</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BURGERSPRONG -->
+    <section class="screen" id="screen-bs">
+      <div class="bs-wrap">
+        <div class="bs-select" id="bs-select">
+          <div class="mode-tag">Kies je speler</div>
+          <div class="bs-grid" id="bs-grid"></div>
+        </div>
+        <div class="bs-play" id="bs-play">
+          <div class="bs-hud">
+            <span class="bs-score" id="bs-score">0</span>
+            <span class="bs-best" id="bs-best">beste: 0</span>
+          </div>
+          <canvas class="bs-canvas" id="bs-canvas"></canvas>
         </div>
       </div>
     </section>
@@ -796,6 +840,41 @@
       <h2>Kies een collega <button class="close" data-close>&times;</button></h2>
       <p style="margin:6px 0 0">Personeel · <span style="color:var(--correct)">✓</span> = al geraden.</p>
       <div class="picker" id="gc-picker"></div>
+    </div>
+  </div>
+
+  <!-- BURGERSPRONG HELP -->
+  <div class="overlay" id="bs-help">
+    <div class="modal">
+      <h2>Burgersprong <button class="close" data-close>&times;</button></h2>
+      <p>Kies een collega en <b>spring zo hoog mogelijk</b>! Je figuurtje stuitert vanzelf van platform naar platform omhoog.</p>
+      <ul class="rules">
+        <li>Houd de <b>linker- of rechterhelft</b> van het speelveld vast om naar links of rechts te bewegen (op de computer: de <b>pijltjestoetsen</b>).</li>
+        <li>Land op een platform en je springt automatisch weer omhoog. Mis je alles en val je naar beneden, dan is het spel voorbij.</li>
+        <li>Pak een <b>🍔 burger</b> voor een flinke boost naar boven!</li>
+        <li>Hoe hoger je komt, hoe hoger je score. Elke collega houdt een eigen record bij.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- BURGERSPRONG STATS -->
+  <div class="overlay" id="bs-stats">
+    <div class="modal">
+      <h2>Burgersprong <button class="close" data-close>&times;</button></h2>
+      <div class="stats-grid"><div class="stat"><div class="n" id="bss-best">0</div><div class="l">Beste score</div></div></div>
+      <h3 style="margin:14px 0 4px">Record per collega</h3>
+      <div class="bss-list" id="bss-list"></div>
+    </div>
+  </div>
+
+  <!-- BURGERSPRONG GAME OVER -->
+  <div class="overlay" id="bs-over">
+    <div class="modal" style="text-align:center">
+      <h2>Game over <button class="close" data-close>&times;</button></h2>
+      <div class="bso-score" id="bso-score">0</div>
+      <div class="bso-msg" id="bso-msg"></div>
+      <div class="countdown">Beste: <b id="bso-best">0</b></div>
+      <div class="btn-row"><button class="btn alt" id="bso-other">Andere collega</button><button class="btn" id="bso-again">Nog een keer</button></div>
     </div>
   </div>
 
@@ -1049,6 +1128,7 @@ function showScreen(name){
     else if(name==='strands'){ hTitle.innerHTML='WOORD<span class="accent">LIJN</span>'; hSub.textContent='zoek alle themawoorden'; }
     else if(name==='mini'){ hTitle.innerHTML='MINI <span class="accent">KRUISWOORD</span>'; hSub.textContent='kruiswoord 5×5'; }
     else if(name==='pips'){ hTitle.innerHTML='<span class="accent">PIPS</span>'; hSub.textContent='leg de domino\'s'; }
+    else if(name==='bs'){ hTitle.innerHTML='BURGER<span class="accent">SPRONG</span>'; hSub.textContent='spring zo hoog mogelijk'; }
     else { hTitle.innerHTML='RAAD HET <span class="accent">PERSONEEL</span>'; hSub.textContent='raad de collega'; }
   }
 }
@@ -1058,9 +1138,10 @@ document.getElementById('card-strands').addEventListener('click',()=>{ showScree
 document.getElementById('card-mini').addEventListener('click',()=>{ showScreen('mini'); if(!miniInited){miniInited=true; mBuildKeyboard(); mStart('daily'); if(!mHelpSeen){show('m-help'); markMHelpSeen();}} });
 document.getElementById('card-pips').addEventListener('click',()=>{ showScreen('pips'); if(!pipsInited){pipsInited=true; pStart('daily'); if(!pHelpSeen){show('p-help'); markPHelpSeen();}} });
 document.getElementById('card-staff').addEventListener('click',()=>{ showScreen('staff'); if(!staffInited){staffInited=true; gcStart('daily'); if(!gcHelpSeen){show('gc-help'); markGCHelpSeen();}} });
+document.getElementById('card-bs').addEventListener('click',()=>{ showScreen('bs'); bsShowSelect(); if(!bsInited){ bsInited=true; if(!bsHelpSeen){ show('bs-help'); bsHelpSeen=true; store('bs:seen',true); } } });
 btnBack.addEventListener('click',()=>showScreen('home'));
-btnHelp.addEventListener('click',()=>show(currentScreen==='woordle'?'w-help':currentScreen==='connect'?'c-help':currentScreen==='strands'?'s-help':currentScreen==='mini'?'m-help':currentScreen==='pips'?'p-help':'gc-help'));
-btnStats.addEventListener('click',()=>{ if(currentScreen==='woordle') openWStats(wLast.won,wLast.tries); else if(currentScreen==='connect') openCStats(); else if(currentScreen==='strands') openSStats(); else if(currentScreen==='mini') openMStats(); else if(currentScreen==='pips') openPStats(); else openGCStats(); });
+btnHelp.addEventListener('click',()=>show(currentScreen==='woordle'?'w-help':currentScreen==='connect'?'c-help':currentScreen==='strands'?'s-help':currentScreen==='mini'?'m-help':currentScreen==='pips'?'p-help':currentScreen==='bs'?'bs-help':'gc-help'));
+btnStats.addEventListener('click',()=>{ if(currentScreen==='woordle') openWStats(wLast.won,wLast.tries); else if(currentScreen==='connect') openCStats(); else if(currentScreen==='strands') openSStats(); else if(currentScreen==='mini') openMStats(); else if(currentScreen==='pips') openPStats(); else if(currentScreen==='bs') openBSStats(); else openGCStats(); });
 
 /* ============ WOORDLE ============ */
 const ROWS=6,COLS=5;
@@ -1662,6 +1743,159 @@ function revealHead(ti){
   },2400);
 }
 
+/* ============ BURGERSPRONG ============ */
+const bsCanvas=document.getElementById('bs-canvas');
+const bsCtx=bsCanvas.getContext('2d');
+const bsScoreEl=document.getElementById('bs-score');
+const bsBestEl=document.getElementById('bs-best');
+let bsBest=0, bsBestByName={}, bsHelpSeen=false, bsInited=false;
+let bsStaffIdx=-1, bsHeadImg=null, bsHeadReady=false;
+let bsRunning=false, bsRaf=0, bsLastT=0, bsPointerDown=false;
+let bsW=0, bsH=0, bsDpr=1;
+let bsPlayer=null, bsPlats=[], bsScore=0, bsDir=0, bsOver=false;
+let bsCol={};
+const BS_GRAV=1800, BS_JUMP=-800, BS_BURGER=-1500, BS_MOVE=380;
+const BS_PW=46, BS_PH=46, BS_PLW=74, BS_PLH=14, BS_BURGER_CHANCE=0.14;
+
+function bsReadColors(){
+  const cs=getComputedStyle(document.documentElement);
+  const g=(n,f)=>{const v=cs.getPropertyValue(n).trim();return v||f;};
+  bsCol={sky:g('--bg','#fbf4e9'), face:g('--bg2','#fbe8d2'), plat:g('--correct','#56ab46'),
+         line:g('--panel-line','#ece1cf'), accent:g('--accent','#ef5a2a'), muted:g('--muted','#827a6a')};
+}
+function bsResize(){
+  bsDpr=Math.min(window.devicePixelRatio||1,2);
+  bsW=bsCanvas.clientWidth||360;
+  bsH=bsCanvas.clientHeight||540;
+  bsCanvas.width=Math.round(bsW*bsDpr);
+  bsCanvas.height=Math.round(bsH*bsDpr);
+  bsCtx.setTransform(bsDpr,0,0,bsDpr,0,0);
+}
+function bsNewPlat(y){ return {x:Math.random()*(bsW-BS_PLW), y, w:BS_PLW, burger:Math.random()<BS_BURGER_CHANCE}; }
+function bsRenderSelect(){
+  const grid=document.getElementById('bs-grid'); grid.innerHTML='';
+  STAFF.forEach((s,i)=>{
+    const b=document.createElement('button'); b.className='bs-pick'; b.type='button';
+    const hs=bsBestByName[s.name]||0;
+    b.innerHTML=`<img src="${s.head||s.img}" alt="${s.name}"><span class="bs-nm">${s.name}</span><span class="bs-hs">${hs?('🏆 '+hs):'—'}</span>`;
+    b.addEventListener('click',()=>bsStart(i));
+    grid.appendChild(b);
+  });
+}
+function bsShowSelect(){
+  bsRunning=false; cancelAnimationFrame(bsRaf);
+  document.getElementById('bs-play').classList.remove('show');
+  document.getElementById('bs-select').style.display='block';
+  bsRenderSelect();
+}
+function bsStart(idx){
+  bsStaffIdx=idx;
+  const s=STAFF[idx];
+  bsHeadReady=false; bsHeadImg=new Image(); bsHeadImg.onload=()=>{bsHeadReady=true;}; bsHeadImg.src=s.head||s.img;
+  document.getElementById('bs-select').style.display='none';
+  document.getElementById('bs-play').classList.add('show');
+  bsReadColors(); bsResize();
+  bsOver=false; bsScore=0; bsDir=0;
+  const startY=bsH-40;
+  bsPlats=[{x:bsW/2-BS_PLW/2, y:startY, w:BS_PLW, burger:false}];
+  let y=startY;
+  while(y>-40){ y-=70+Math.random()*55; bsPlats.push(bsNewPlat(y)); }
+  bsPlayer={x:bsW/2-BS_PW/2, y:startY-BS_PH, vx:0, vy:BS_JUMP};
+  bsScoreEl.textContent='0';
+  bsBestEl.textContent='beste: '+(bsBestByName[s.name]||0);
+  bsRunning=true; bsLastT=0;
+  cancelAnimationFrame(bsRaf); bsRaf=requestAnimationFrame(bsLoop);
+}
+function bsLoop(t){
+  if(!bsRunning||currentScreen!=='bs'){ bsRunning=false; return; }
+  if(!bsLastT)bsLastT=t;
+  let dt=(t-bsLastT)/1000; bsLastT=t;
+  if(dt>0.033)dt=0.033;
+  bsUpdate(dt); bsDraw();
+  if(bsRunning) bsRaf=requestAnimationFrame(bsLoop);
+}
+function bsUpdate(dt){
+  const p=bsPlayer;
+  const oldFeet=p.y+BS_PH;
+  // horizontal
+  p.x += bsDir*BS_MOVE*dt;
+  if(p.x+BS_PW<0) p.x=bsW; else if(p.x>bsW) p.x=-BS_PW;
+  // vertical
+  p.vy += BS_GRAV*dt; p.y += p.vy*dt;
+  const newFeet=p.y+BS_PH;
+  if(p.vy>0){
+    for(const pl of bsPlats){
+      if(p.x+BS_PW>pl.x+4 && p.x<pl.x+pl.w-4 && oldFeet<=pl.y && newFeet>=pl.y){
+        p.y=pl.y-BS_PH;
+        if(pl.burger){ pl.burger=false; p.vy=BS_BURGER; } else p.vy=BS_JUMP;
+        break;
+      }
+    }
+  }
+  // camera scroll
+  const thr=bsH*0.42;
+  if(p.y<thr){ const d=thr-p.y; p.y=thr; bsScore+=d; for(const pl of bsPlats) pl.y+=d; }
+  // recycle + spawn
+  bsPlats=bsPlats.filter(pl=>pl.y<bsH+20);
+  let minY=bsPlats.length?Math.min(...bsPlats.map(pl=>pl.y)):0;
+  while(minY>-20){ minY-=70+Math.random()*55; bsPlats.push(bsNewPlat(minY)); }
+  bsScoreEl.textContent=Math.floor(bsScore/10);
+  if(p.y>bsH) bsGameOver();
+}
+function bsRoundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function bsDraw(){
+  const ctx=bsCtx;
+  ctx.fillStyle=bsCol.sky; ctx.fillRect(0,0,bsW,bsH);
+  for(const pl of bsPlats){
+    ctx.fillStyle=bsCol.plat; bsRoundRect(ctx,pl.x,pl.y,pl.w,BS_PLH,6); ctx.fill();
+    if(pl.burger){ ctx.font='22px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('🍔',pl.x+pl.w/2,pl.y-11); }
+  }
+  // player
+  const p=bsPlayer, cx=p.x+BS_PW/2, cy=p.y+BS_PH/2, r=BS_PW/2;
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.closePath();
+  ctx.fillStyle=bsCol.face; ctx.fill(); ctx.clip();
+  if(bsHeadReady) ctx.drawImage(bsHeadImg,p.x,p.y,BS_PW,BS_PH);
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.lineWidth=2.5; ctx.strokeStyle=bsCol.accent; ctx.stroke();
+}
+function bsGameOver(){
+  bsRunning=false; bsOver=true; bsDir=0; cancelAnimationFrame(bsRaf);
+  const score=Math.floor(bsScore/10), s=STAFF[bsStaffIdx];
+  if(score>(bsBestByName[s.name]||0)){ bsBestByName[s.name]=score; store('bs:bestByName',bsBestByName); }
+  let nb=false;
+  if(score>bsBest){ bsBest=score; store('bs:best',bsBest); nb=true; }
+  bsUpdateCardBadge();
+  document.getElementById('bso-score').textContent=score;
+  document.getElementById('bso-best').textContent=bsBest;
+  document.getElementById('bso-msg').textContent= nb?'Nieuw record! 🎉':('met '+s.name);
+  if(nb) confetti({count:120});
+  show('bs-over');
+}
+function openBSStats(){
+  document.getElementById('bss-best').textContent=bsBest;
+  const list=document.getElementById('bss-list'); list.innerHTML='';
+  STAFF.map(s=>({name:s.name,head:s.head||s.img,hs:bsBestByName[s.name]||0}))
+    .sort((a,b)=>b.hs-a.hs)
+    .forEach(e=>{ const row=document.createElement('div'); row.className='bss-row'; row.innerHTML=`<img src="${e.head}" alt=""><span class="bss-nm">${e.name}</span><span class="bss-hs">${e.hs||'—'}</span>`; list.appendChild(row); });
+  show('bs-stats');
+}
+function bsUpdateCardBadge(){
+  const card=document.getElementById('card-bs'); if(!card)return;
+  let b=card.querySelector('.card-badge'); if(!b){ b=document.createElement('span'); b.className='card-badge'; card.appendChild(b); }
+  b.className='card-badge'; b.textContent= bsBest?('🏆 '+bsBest):'nieuw';
+}
+// besturing: linker/rechter helft vasthouden
+function bsPointAt(e){ if(bsOver)return; const r=bsCanvas.getBoundingClientRect(); bsDir=((e.clientX-r.left)<r.width/2)?-1:1; }
+bsCanvas.addEventListener('pointerdown',e=>{ bsPointerDown=true; bsPointAt(e); try{bsCanvas.setPointerCapture(e.pointerId);}catch(_){} });
+bsCanvas.addEventListener('pointermove',e=>{ if(bsPointerDown) bsPointAt(e); });
+bsCanvas.addEventListener('pointerup',()=>{ bsPointerDown=false; bsDir=0; });
+bsCanvas.addEventListener('pointercancel',()=>{ bsPointerDown=false; bsDir=0; });
+document.addEventListener('keyup',e=>{ if(currentScreen==='bs'&&(e.key==='ArrowLeft'||e.key==='ArrowRight'))bsDir=0; });
+window.addEventListener('resize',()=>{ if(currentScreen==='bs'&&bsRunning) bsResize(); });
+document.getElementById('bso-again').addEventListener('click',()=>{ hide('bs-over'); bsStart(bsStaffIdx); });
+document.getElementById('bso-other').addEventListener('click',()=>{ hide('bs-over'); bsShowSelect(); });
+
 /* ============ badges ============ */
 let badgesEarned=new Set();
 function gameList(){return [
@@ -1711,6 +1945,7 @@ const themeIcon=document.getElementById('theme-icon');
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);themeIcon.innerHTML=t==="dark"?'<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.6 6.6 0 0 0 21 12.8z"/>':'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/>';store('app:theme',t);}
 document.getElementById('btn-theme').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==="dark"?"light":"dark"));
 document.addEventListener('keydown',e=>{const open=document.querySelector('.overlay.show');if(open){if(e.key==="Escape")open.classList.remove('show');return;}
+  if(currentScreen==='bs'){ if(e.key==="ArrowLeft"){e.preventDefault();bsDir=-1;}else if(e.key==="ArrowRight"){e.preventDefault();bsDir=1;} return;}
   if(currentScreen==='woordle'){if(e.key==="Enter")handleKey("Enter");else if(e.key==="Backspace")handleKey("Back");else if(/^[a-zA-Z]$/.test(e.key))handleKey(e.key);return;}
   if(currentScreen==='mini'){if(mOver)return;if(e.key==="Backspace"){e.preventDefault();mBack();}else if(e.key&&e.key.startsWith("Arrow")){e.preventDefault();mArrow(e.key);}else if(e.key==="Tab"){e.preventDefault();mNavEntry(e.shiftKey?-1:1);}else if(/^[a-zA-Z]$/.test(e.key))mType(e.key);return;}
 });
@@ -1733,7 +1968,9 @@ function markMHelpSeen(){mHelpSeen=true;store('mini:seen',true);}
   cnDone=new Set(await load('connect:done',[]));stDone=new Set(await load('strands:done',[]));mDone=new Set(await load('mini:done',[]));pipsDone=new Set(await load('pips:done',[]));gcDone=new Set(await load('staff:done',[]));
   wHelpSeen=await load('woordle:seen',false);cHelpSeen=await load('connect:seen',false);sHelpSeen=await load('strands:seen',false);mHelpSeen=await load('mini:seen',false);pHelpSeen=await load('pips:seen',false);gcHelpSeen=await load('staff:seen',false);
   mAutoCheck=await load('mini:autocheck',false);mUpdateAutoBtn();
+  bsBest=await load('bs:best',0);bsBestByName=await load('bs:bestByName',{});bsHelpSeen=await load('bs:seen',false);
   badgesEarned=new Set(await load('app:badges',[]));checkBadges(true);
+  bsUpdateCardBadge();
   buildLogoHeads();
   showScreen('home');
 })();

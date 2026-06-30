@@ -61,6 +61,7 @@ kopieer-voorbeeld. Voor een nieuw spel met prefix `xx`:
 | Mini Kruiswoord | `mini` | `MINI` | 5×5 tegen de klok |
 | Pips | `pips` | `PIPS` | domino's op gekleurde gebieden |
 | Raad het Personeel | `staff` | `STAFF` | tekening → naam typen (zie hieronder) |
+| Burgersprong | `bs` | — (gebruikt `STAFF`) | arcade/Doodle-Jump op `<canvas>` (zie hieronder) |
 
 ## Raad het Personeel (`staff`)
 - **Data** staat tussen de markers `/* STAFF:START */ … /* STAFF:END */` in het script en wordt
@@ -73,6 +74,21 @@ kopieer-voorbeeld. Voor een nieuw spel met prefix `xx`:
 - **Spel:** speler typt de naam. Matching is ongevoelig voor hoofdletters/spaties/accenten en accepteert
   `aliases` (bijnamen). Hint onthult eerst de functie, daarna letter voor letter de naam. Bij goed:
   naam + functie + leeftijd + confetti.
+
+## Burgersprong (`bs`)
+- **Type:** arcade/highscore (Doodle-Jump-stijl), géén puzzel. Daarom bewust **niet** in
+  `gameList()` — het doet dus niet mee in de medailles/Grootmeester. In plaats van een
+  medaille toont de home-kaart een eigen "🏆 beste"-label via `bsUpdateCardBadge()`.
+- **Karakter kiezen:** je kiest vooraf een collega uit `STAFF`. Het kies-grid gebruikt
+  `STAFF[i].img`; het ronde koppie `STAFF[i].head` is de speel-sprite op het `<canvas>`.
+- **Techniek:** een `<canvas id="bs-canvas">` met een `requestAnimationFrame`-loop
+  (`bsLoop`). Fysica in `bsUpdate` (zwaartekracht, auto-sprong bij landen, camera-scroll),
+  tekenen in `bsDraw`. De loop stopt vanzelf zodra `currentScreen !== 'bs'`.
+- **Besturing:** linker-/rechterhelft van de canvas vasthouden (`pointerdown/move/up`), of
+  de pijltjestoetsen (in de globale `keydown`/`keyup`-handlers). Beide zetten `bsDir` (-1/0/1).
+- **Burgers:** ~14% van de platforms heeft een 🍔 die een grote boost (`BS_BURGER`) geeft.
+- **Opslag:** `bs:best` (algemeen record), `bs:bestByName` (record per collega), `bs:seen`
+  (help al getoond). Geladen in `init()`.
 
 ## Online zetten (PWA + GitHub Pages)
 - De app is een **PWA**: `manifest.webmanifest` (naam/icoon/kleuren) + `sw.js` (service worker die de

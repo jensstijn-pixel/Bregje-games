@@ -2,6 +2,20 @@
 
 Goeiemorgen Jens! 👋 Hieronder precies wat ik vannacht heb gedaan.
 
+## Nieuw spel — Burgersprong 🍔 (30 juni)
+- **Wat:** een Doodle-Jump-spel waarbij je vooraf een **collega kiest** als figuurtje.
+  Je stuitert vanzelf omhoog, beweegt links/rechts, en moet op de platforms blijven landen.
+  **Burgers** geven een flinke boost naar boven. Hoe hoger je komt, hoe hoger je score.
+- **Besturing:** linker-/rechterhelft van het speelveld vasthouden (op de computer: de
+  pijltjestoetsen).
+- **Score:** dit is een **arcade-spel op highscore** (geen puzzel), dus het telt los van de
+  medailles/Grootmeester. Er is een algemeen record én een eigen record per collega.
+- **Getest in de browser:** kiezen werkt, stuiteren/landen werkt, burger-boost werkt,
+  game-over + records opslaan werkt, licht/donker klopt. Geen fouten in de console.
+- Klein aandachtspunt: de zwevende **"Installeer app"-knop** staat onderaan en overlapt
+  tijdens het spelen een klein stukje onderkant. Die knop verdwijnt zodra de app is
+  geïnstalleerd (of weggeklikt). Wil je 'm op dit scherm helemaal verbergen, dan regel ik dat.
+
 ## TL;DR
 - ✅ **Git opgezet** — alles in versiebeheer, elke stap los terug te draaien.
 - ✅ **Fase 1 — uiterlijk moderner & speelser** (af, maar visueel nog niet door mij bekeken — zie ⚠️).
