@@ -1,6 +1,6 @@
 /* Bregje Games — service worker (offline + installeerbaar).
    Cache-versie ophogen bij elke release zodat collega's de nieuwe versie krijgen. */
-const VERSION = 'bregje-v4';
+const VERSION = 'bregje-v5';
 const SHELL = [
   './', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-512-maskable.png', './apple-touch-icon.png'

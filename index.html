@@ -1772,11 +1772,13 @@ function bsResize(){
   bsCtx.setTransform(bsDpr,0,0,bsDpr,0,0);
 }
 function bsNewPlat(y){ return {x:Math.random()*(bsW-BS_PLW), y, w:BS_PLW, burger:Math.random()<BS_BURGER_CHANCE}; }
+// unieke sleutel per collega: naam blijft de sleutel, behalve bij dubbele namen (bv. twee keer Lucas) — dan krijgt de tweede een suffix
+function bsKey(i){ const nm=STAFF[i].name; return STAFF.findIndex(s=>s.name===nm)===i ? nm : nm+'#'+i; }
 function bsRenderSelect(){
   const grid=document.getElementById('bs-grid'); grid.innerHTML='';
   STAFF.forEach((s,i)=>{
     const b=document.createElement('button'); b.className='bs-pick'; b.type='button';
-    const hs=bsBestByName[s.name]||0;
+    const hs=bsBestByName[bsKey(i)]||0;
     b.innerHTML=`<img src="${s.head||s.img}" alt="${s.name}"><span class="bs-nm">${s.name}</span><span class="bs-hs">${hs?('🏆 '+hs):'—'}</span>`;
     b.addEventListener('click',()=>bsStart(i));
     grid.appendChild(b);
@@ -1802,7 +1804,7 @@ function bsStart(idx){
   while(y>-40){ y-=70+Math.random()*55; bsPlats.push(bsNewPlat(y)); }
   bsPlayer={x:bsW/2-BS_PW/2, y:startY-BS_PH, vx:0, vy:BS_JUMP};
   bsScoreEl.textContent='0';
-  bsBestEl.textContent='beste: '+(bsBestByName[s.name]||0);
+  bsBestEl.textContent='beste: '+(bsBestByName[bsKey(idx)]||0);
   bsRunning=true; bsLastT=0;
   cancelAnimationFrame(bsRaf); bsRaf=requestAnimationFrame(bsLoop);
 }
@@ -1861,8 +1863,8 @@ function bsDraw(){
 }
 function bsGameOver(){
   bsRunning=false; bsOver=true; bsDir=0; cancelAnimationFrame(bsRaf);
-  const score=Math.floor(bsScore/10), s=STAFF[bsStaffIdx];
-  if(score>(bsBestByName[s.name]||0)){ bsBestByName[s.name]=score; store('bs:bestByName',bsBestByName); }
+  const score=Math.floor(bsScore/10), s=STAFF[bsStaffIdx], key=bsKey(bsStaffIdx);
+  if(score>(bsBestByName[key]||0)){ bsBestByName[key]=score; store('bs:bestByName',bsBestByName); }
   let nb=false;
   if(score>bsBest){ bsBest=score; store('bs:best',bsBest); nb=true; }
   bsUpdateCardBadge();
@@ -1875,7 +1877,7 @@ function bsGameOver(){
 function openBSStats(){
   document.getElementById('bss-best').textContent=bsBest;
   const list=document.getElementById('bss-list'); list.innerHTML='';
-  STAFF.map(s=>({name:s.name,head:s.head||s.img,hs:bsBestByName[s.name]||0}))
+  STAFF.map((s,i)=>({name:s.name,head:s.head||s.img,hs:bsBestByName[bsKey(i)]||0}))
     .sort((a,b)=>b.hs-a.hs)
     .forEach(e=>{ const row=document.createElement('div'); row.className='bss-row'; row.innerHTML=`<img src="${e.head}" alt=""><span class="bss-nm">${e.name}</span><span class="bss-hs">${e.hs||'—'}</span>`; list.appendChild(row); });
   show('bs-stats');
